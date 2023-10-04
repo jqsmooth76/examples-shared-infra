@@ -27,7 +27,7 @@ jobs:
         run: |
           az account show -o table
           az storage account list -o table
-        # az storage blob list --container-name ${{ env.PULUMI_STATE_CONTAINER_NAME }} --account-name ${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }}
+          az storage blob list --container-name ${{ env.PULUMI_STATE_CONTAINER_NAME }} --account-name ${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }} --auth-mode login
         #   pulumi config set azure-native:clientId ${{ secrets.AZURE_CLIENT_ID }}
         #   pulumi config set azure-native:clientSecret  ${{ secrets.AZURE_CLIENT_SECRET }} --secret
         #   pulumi config set azure-native:tenantId  ${{ secrets.AZURE_TENANT_ID }}
