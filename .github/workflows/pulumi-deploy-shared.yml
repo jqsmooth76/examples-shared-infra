@@ -23,15 +23,17 @@ jobs:
         with:
           creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
 
-      - name: Configure pulumi creds
+      - name: Display Azure contents
         run: |
           az account show -o table
           az storage account list -o table
           az storage blob list --container-name ${{ env.PULUMI_STATE_CONTAINER_NAME }} --account-name ${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }} --auth-mode login -o table
 
+      - name: Deploy Infra via Pulumi
+        run: |
           cd ./.pulumi/shared
           pulumi login --cloud-url azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}?storage_account=${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }} -v=3
-          pulumi stack select ${{ env.PULUMI_STACK_NAME }}
+          pulumi stack select ${{ env.PULUMI_STACK_NAME }} -c
           pulumi up --yes
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
