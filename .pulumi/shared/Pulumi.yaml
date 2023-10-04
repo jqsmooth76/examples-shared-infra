@@ -1,0 +1,3 @@
+name: example-shared
+runtime: nodejs
+description: Shared infra for development and production examples
