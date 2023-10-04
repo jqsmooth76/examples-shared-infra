@@ -30,8 +30,8 @@ jobs:
           az storage blob list --container-name ${{ env.PULUMI_STATE_CONTAINER_NAME }} --account-name ${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }} --auth-mode login -o table
 
           cd ./.pulumi/shared
-          pulumi login --cloud-url azblob://sharedstatestore?storage_account=uksshrpulstatesa01 -v=3
-
+          pulumi login --cloud-url azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}?storage_account=${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }} -v=3
+          pulumi stack select ${{ env.PULUMI_STACK_NAME }}
           pulumi up --yes
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
