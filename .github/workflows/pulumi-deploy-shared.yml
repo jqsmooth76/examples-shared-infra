@@ -36,12 +36,9 @@ jobs:
         run: |
           cd ./.pulumi/shared
           npm install
-
-      - name: Deploy Infra via Pulumi
-        run: |
           pulumi login --cloud-url azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}?storage_account=${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }} -v=3
           pulumi stack select ${{ env.PULUMI_STACK_NAME }} -c
-          pulumi stack change-secrets-provider "azurekeyvault://${{ env.PULUMI_STACK_SECRETS_AZURE_KEY_VAULT }}.vault.azure.net/keys/PulumiSharedSecrets"
+          pulumi stack change-secrets-provider "azurekeyvault://${{ env.PULUMI_STACK_SECRETS_AZURE_KEY_VAULT }}.vault.azure.net/keys/${{ env.PULUMI_STACK_SECRETS_AZURE_KEY_VAULT_KEY }}
           pulumi up --yes
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
