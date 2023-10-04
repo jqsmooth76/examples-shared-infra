@@ -29,6 +29,7 @@ jobs:
           az account show -o table
           az storage account list -o table
           az storage blob list --container-name ${{ env.PULUMI_STATE_CONTAINER_NAME }} --account-name ${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }} --auth-mode login -o table
+          az keyvault key list --vault-name ${{ env.PULUMI_STACK_SECRETS_AZURE_KEY_VAULT }}
 
       - name: Deploy Infra via Pulumi
         run: |
