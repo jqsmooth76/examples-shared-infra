@@ -10,6 +10,11 @@ jobs:
   up:
     name: Preview
     runs-on: ubuntu-latest
+    env:
+      PULUMI_WORK_DIR: ./.pulumi/shared/
+      PULUMI_STATE_CONTAINER_NAME: sharedstatestore
+      PULUMI_STACK_NAME: example-shared
+
     steps:
       - uses: actions/checkout@v4
 
@@ -19,7 +24,6 @@ jobs:
 
       - name: Configure pulumi creds
         run: |
-          cd ./.pulumi/shared/
           az account list
         #   pulumi config set azure-native:clientId ${{ secrets.AZURE_CLIENT_ID }}
         #   pulumi config set azure-native:clientSecret  ${{ secrets.AZURE_CLIENT_SECRET }} --secret
@@ -41,8 +45,9 @@ jobs:
       - uses: pulumi/actions@v4
         with:
           command: up
-          cloud-url: azblob://sharedstatestore
-          stack-name: example-shared
+          cloud-url: azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}
+          stack-name: ${{ env.PULUMI_STACK_NAME }}
+          upsert: true
         env:
           AZURE_STORAGE_ACCOUNT: uksshrpulstatesa01
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -53,4 +58,4 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          PULUMI_ACCESS_TOKEN: "12345"
+          PULUMI_BACKEND_URL: azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}
