@@ -14,6 +14,7 @@ jobs:
       PULUMI_WORK_DIR: ./.pulumi/shared/
       PULUMI_STATE_CONTAINER_NAME: sharedstatestore
       PULUMI_STACK_NAME: example-shared
+      PULUMI_STATE_STORAGE_ACCOUNT_NAME: uksshrpulstatesa01
 
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +26,7 @@ jobs:
       - name: Configure pulumi creds
         run: |
           az account list
+          az storage blob list --container-name ${{ env.PULUMI_STATE_CONTAINER_NAME }} --account-name ${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }}
         #   pulumi config set azure-native:clientId ${{ secrets.AZURE_CLIENT_ID }}
         #   pulumi config set azure-native:clientSecret  ${{ secrets.AZURE_CLIENT_SECRET }} --secret
         #   pulumi config set azure-native:tenantId  ${{ secrets.AZURE_TENANT_ID }}
@@ -42,20 +44,20 @@ jobs:
       #       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       #       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - uses: pulumi/actions@v4
-        with:
-          command: up
-          cloud-url: azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}
-          stack-name: ${{ env.PULUMI_STACK_NAME }}
-          upsert: true
-        env:
-          AZURE_STORAGE_ACCOUNT: uksshrpulstatesa01
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          PULUMI_BACKEND_URL: azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}
+    #   - uses: pulumi/actions@v4
+    #     with:
+    #       command: up
+    #       cloud-url: azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}
+    #       stack-name: ${{ env.PULUMI_STACK_NAME }}
+    #       upsert: true
+    #     env:
+    #       AZURE_STORAGE_ACCOUNT: ${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }}
+    #       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+    #       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+    #       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+    #       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    #       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+    #       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+    #       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+    #       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    #       PULUMI_BACKEND_URL: azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}
