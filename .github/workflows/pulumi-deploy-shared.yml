@@ -19,6 +19,7 @@ jobs:
 
       - name: Configure pulumi creds
         run: |
+          cd ./pulumi/shared/
           pulumi config set azure:clientId ${{ secrets.AZURE_CLIENT_ID }}
           pulumi config set azure:clientSecret  ${{ secrets.AZURE_CLIENT_SECRET }} --secret
           pulumi config set azure:tenantId  ${{ secrets.AZURE_TENANT_ID }}
