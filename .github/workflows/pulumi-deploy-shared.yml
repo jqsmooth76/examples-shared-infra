@@ -15,6 +15,7 @@ jobs:
       PULUMI_STATE_CONTAINER_NAME: sharedstatestore
       PULUMI_STACK_NAME: example-shared
       PULUMI_STATE_STORAGE_ACCOUNT_NAME: uksshrpulstatesa01
+      PULUMI_STACK_SECRETS_AZURE_KEY_VAULT: ukshrpulstatekv01
 
     steps:
       - uses: actions/checkout@v4
@@ -33,7 +34,7 @@ jobs:
         run: |
           cd ./.pulumi/shared
           pulumi login --cloud-url azblob://${{ env.PULUMI_STATE_CONTAINER_NAME }}?storage_account=${{ env.PULUMI_STATE_STORAGE_ACCOUNT_NAME }} -v=3
-          pulumi stack select ${{ env.PULUMI_STACK_NAME }} -c
+          pulumi stack init ${{ env.PULUMI_STACK_NAME }} --secrets-provider "azurekeyvault://${{ env.PULUMI_STACK_SECRETS_AZURE_KEY_VAULT }}.vault.azure.net/keys/PulumiSharedSecrets"
           pulumi up --yes
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
